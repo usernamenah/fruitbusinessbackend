@@ -30,17 +30,20 @@ app.use(
         methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     })
 );
-// app.use((req, res, next) => {
-//     res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
-//     res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
-//     next();
-// });
 
 // Middleware
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.json());
+app.options("*", cors());
+
+
+app.use((req, res, next) => {
+    console.log(`Request received: ${req.method} ${req.url}`);
+    console.log("Headers:", req.headers);
+    next();
+});
 
 // Connect to MongoDB
 mongoose
@@ -78,10 +81,7 @@ app.get("/home", authenticate, (req, res) => {
     res.json({ message: "Welcome to the Home Page!" });
   });
 // Protected Route (Example: Home Page Data)
-app.post("/logout", (req, res) => {
-    res.clearCookie("authToken");
-    res.json({ message: "Logged out successfully" });
-});
+
 
 // Logout Route
 app.post("/logout", (req, res) => {
