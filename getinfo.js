@@ -1,91 +1,44 @@
 const express = require('express');
+const bcrypt=require('bcrypt');
 const router = express.Router();
-const { OAuth2Client } = require('google-auth-library');
+require('dotenv').config();
+const { OAuth2Client } = require('google-auth-library');  // Import OAuth2Client
 const jwt = require("jsonwebtoken");
-const User = require('./models/getinfomodel');
 
+
+const User = require('./models/getinfomodel');
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+// Google Login Route
+
 
 router.post("/google-login", async (req, res) => {
-  try {
-    const { token } = req.body;
-    
-    // First validate the token structure
-    if (!token || typeof token !== 'string' || token.split('.').length !== 3) {
-      return res.status(400).json({
-        success: false,
-        error: "Invalid token format"
-      });
-    }
-
-    // Verify Google token with error handling
-    let ticket;
     try {
-      ticket = await client.verifyIdToken({
-        idToken: token,
-        audience: process.env.GOOGLE_CLIENT_ID,
-        // Add this for additional validation:
-        issuer: [
-          'https://accounts.google.com',
-          'accounts.google.com'
-        ]
-      });
-    } catch (verifyErr) {
-      console.error("Token verification error:", verifyErr);
-      return res.status(401).json({
-        success: false,
-        error: "Invalid Google token",
-        details: verifyErr.message
-      });
+        const { token } = req.body;
+        const ticket = await client.verifyIdToken({ idToken: token, audience: process.env.GOOGLE_CLIENT_ID });
+        const { sub, name, email, picture } = ticket.getPayload();
+
+        let user = await User.findOne({ googleId: sub });
+        if (!user) {
+            user = new User({ googleId: sub, name, email, picture });
+            await user.save();
+        }
+
+        const authToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+
+        // Set cookie securely
+        res.cookie("authToken", authToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production', // Secure in production only
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            maxAge: 12 * 60 * 60 * 1000 // 12 hours
+        });
+
+        return res.json({ message: "Login successful", redirect: "/home" }); // ✅ RETURN to prevent multiple responses
+    } catch (err) {
+        console.error("❌ Google Authentication Error:", err);
+        return res.status(500).json({ error: "Google authentication failed" });
     }
-
-    const payload = ticket.getPayload();
-    if (!payload) {
-      return res.status(401).json({
-        success: false,
-        error: "Invalid token payload"
-      });
-    }
-
-    const { sub, name, email, picture } = payload;
-
-    // Find or create user
-    let user = await User.findOne({ googleId: sub });
-    if (!user) {
-      user = new User({ googleId: sub, name, email, picture });
-      await user.save();
-    }
-
-    // Create JWT
-    const authToken = jwt.sign(
-      { userId: user._id },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
-
-    // Set secure cookie
-    res.cookie("authToken", authToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      domain: process.env.NODE_ENV === "production" ? ".vercel.app" : undefined, // Don't set domain for localhost
-      maxAge: 3600000
-    });
-
-    return res.status(200).json({
-      success: true,
-      user: { name, email, picture },
-      redirect: "/home"
-    });
-
-  } catch (err) {
-    console.error("Google auth error:", err);
-    return res.status(500).json({
-      success: false,
-      error: "Authentication failed",
-      details: process.env.NODE_ENV === "development" ? err.message : undefined
-    });
-  }
 });
+
 
 module.exports = router;
