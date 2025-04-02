@@ -20,24 +20,21 @@ const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 const getinfo = require('./getinfo.js');
 
-// const corsOptions = {
-//     origin: 'https://fruitbusiness.vercel.app', // Only allow this origin
-//     credentials: true, // Allow cookies, authentication headers
-//     methods: 'GET, POST, PUT, DELETE, OPTIONS',
-//     allowedHeaders: 'Content-Type, Authorization',
-//   };
-  
-  app.use(cors());
 // CORS Configuration
-
 app.use(
     cors({
-        origin: "https://fruitbusiness.vercel.app",
-        credentials: true,
-        allowedHeaders: ["Content-Type", "Authorization"],
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      origin: ["https://fruitbusiness.vercel.app","http://localhost:3000"],
+      credentials: true,
+      allowedHeaders: ["Content-Type", "Authorization"], // Fixed typo
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
     })
-);
+  );
+
+  app.use((req, res, next) => {
+    res.header("Cross-Origin-Embedder-Policy", "require-corp");
+    res.header("Cross-Origin-Opener-Policy", "same-origin");
+    next();
+  });
 
 // Middleware
 app.use(morgan("dev"));
