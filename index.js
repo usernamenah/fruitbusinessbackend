@@ -20,29 +20,24 @@ const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 const getinfo = require('./getinfo.js');
 
-const corsOptions = {
-    origin: 'https://fruitbusiness.vercel.app', // Only allow this origin
-    credentials: true, // Allow cookies, authentication headers
-    methods: 'GET, POST, PUT, DELETE, OPTIONS',
-    allowedHeaders: 'Content-Type, Authorization',
-  };
+// const corsOptions = {
+//     origin: 'https://fruitbusiness.vercel.app', // Only allow this origin
+//     credentials: true, // Allow cookies, authentication headers
+//     methods: 'GET, POST, PUT, DELETE, OPTIONS',
+//     allowedHeaders: 'Content-Type, Authorization',
+//   };
   
-  app.use(cors(corsOptions));
+  app.use(cors());
 // CORS Configuration
-// app.use((req, res, next) => {
-//     res.setHeader('Access-Control-Allow-Origin', '*'); // Allow all origins (or specify a particular domain)
-//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-//     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-//     next();
-//   });
-// app.use(
-//     cors({
-//         origin: "https://fruitbusiness.vercel.app",
-//         credentials: true,
-//         allowedHeaders: ["Content-Type", "Authorization"],
-//         methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-//     })
-// );
+
+app.use(
+    cors({
+        origin: "https://fruitbusiness.vercel.app",
+        credentials: true,
+        allowedHeaders: ["Content-Type", "Authorization"],
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    })
+);
 
 // Middleware
 app.use(morgan("dev"));
