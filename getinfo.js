@@ -8,11 +8,14 @@ const jwt = require("jsonwebtoken");
 
 const User = require('./models/getinfomodel');
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+
 // Google Login Route
 
 
 router.post("/google-login", async (req, res) => {
     try {
+
         const { token } = req.body;
         const ticket = await client.verifyIdToken({ idToken: token, audience: process.env.GOOGLE_CLIENT_ID });
         const { sub, name, email, picture } = ticket.getPayload();

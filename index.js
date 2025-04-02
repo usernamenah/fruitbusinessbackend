@@ -24,7 +24,7 @@ const getinfo = require('./getinfo.js');
 // CORS Configuration
 app.use(
     cors({
-        origin: "https://fruitbusiness.vercel.app",
+        origin: "http://localhost:3000",
         credentials: true,
         allowedHeaders: ["Content-Type", "Authorization"],
         methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -39,11 +39,7 @@ app.use(express.json());
 app.options("*", cors());
 
 
-app.use((req, res, next) => {
-    console.log(`Request received: ${req.method} ${req.url}`);
-    console.log("Headers:", req.headers);
-    next();
-});
+
 
 // Connect to MongoDB
 mongoose
@@ -54,6 +50,7 @@ mongoose
 // User Schema & Model
 
 // const User = mongoose.model("User", UserSchema, "googlecreds");
+
 
 app.use('/api', getinfo);
 
@@ -78,10 +75,11 @@ app.get("/check-auth", authenticate, (req, res) => {
   });
 
 app.get("/home", authenticate, (req, res) => {
+
     res.json({ message: "Welcome to the Home Page!" });
   });
-// Protected Route (Example: Home Page Data)
 
+// Protected Route (Example: Home Page Data)
 
 // Logout Route
 app.post("/logout", (req, res) => {
