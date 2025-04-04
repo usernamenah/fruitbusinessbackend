@@ -19,11 +19,14 @@ router.post("/google-login", async (req, res) => {
         const { token } = req.body;
         const ticket = await client.verifyIdToken({ idToken: token, audience: process.env.GOOGLE_CLIENT_ID });
         const { sub, name, email, picture } = ticket.getPayload();
-
+        let checkphno = true;
         let user = await User.findOne({ googleId: sub });
         if (!user) {
-            user = new User({ googleId: sub, name, email, picture });
+            user = new User({ googleId: sub, name, email, picture ,phno : 0 });
             await user.save();
+        }
+        if(user.phno === 0){
+            checkphno = false;
         }
 
         const authToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
@@ -35,8 +38,14 @@ router.post("/google-login", async (req, res) => {
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             maxAge: 12 * 60 * 60 * 1000 // 12 hours
         });
+        res.cookie("chpn", authToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production', // Secure in production only
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            maxAge: 12 * 60 * 60 * 1000 // 12 hours
+        });
 
-        return res.json({ message: "Login successful", redirect: "/home" }); // ✅ RETURN to prevent multiple responses
+        return res.json({ message: "Login successful", redirect: "/home" , chpn :  checkphno}); 
     } catch (err) {
         console.error("❌ Google Authentication Error:", err);
         return res.status(500).json({ error: "Google authentication failed" });

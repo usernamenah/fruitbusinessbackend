@@ -19,6 +19,7 @@ const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 
 const getinfo = require('./getinfo.js');
+const checkinfo = require('./getcontactinfo.js');
 
 
 // CORS Configuration
@@ -53,6 +54,7 @@ mongoose
 
 
 app.use('/api', getinfo);
+app.use('/throughreq', checkinfo);
 
 // Authentication Middleware
 const authenticate = (req, res, next) => {
@@ -84,6 +86,7 @@ app.get("/home", authenticate, (req, res) => {
 // Logout Route
 app.post("/logout", (req, res) => {
     res.clearCookie("authToken");
+    res.clearCookie("chpn");
     res.json({ message: "Logged out successfully" });
 });
 

@@ -6,6 +6,7 @@ const UserSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     picture: { type: String },
+    phno: { type: Number },
 });
 
 const getinfo = mongoose.model("Student", UserSchema, "googlecreds");
