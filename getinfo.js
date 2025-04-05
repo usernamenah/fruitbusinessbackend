@@ -38,14 +38,15 @@ router.post("/google-login", async (req, res) => {
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             maxAge: 12 * 60 * 60 * 1000 // 12 hours
         });
-        res.cookie("chpn", authToken, {
+        console.log(checkphno);
+        res.cookie("chpn", checkphno, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production', // Secure in production only
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             maxAge: 12 * 60 * 60 * 1000 // 12 hours
         });
 
-        return res.json({ message: "Login successful", redirect: "/home" , chpn :  checkphno}); 
+        return res.json({ message: "Login successful", redirect: "/home" }); 
     } catch (err) {
         console.error("❌ Google Authentication Error:", err);
         return res.status(500).json({ error: "Google authentication failed" });
