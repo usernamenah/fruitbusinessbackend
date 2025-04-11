@@ -15,7 +15,6 @@ router.get("/chrephno", (req, res) => {
     }
 
     // You can customize this condition however you want
-    // Example: token === "0" or any specific value
     if (token === "0") {
         res.status(200).json({ authorized: true });
     }
