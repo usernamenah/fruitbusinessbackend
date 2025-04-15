@@ -20,6 +20,7 @@ const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 const getinfo = require('./getinfo.js');
 const checkinfo = require('./getcontactinfo.js');
+const placeorder = require('./booking.js');
 
 
 // CORS Configuration
@@ -55,6 +56,7 @@ mongoose
 
 app.use('/api', getinfo);
 app.use('/throughreq', checkinfo);
+app.use('/order', placeorder);
 
 // Authentication Middleware
 const authenticate = (req, res, next) => {

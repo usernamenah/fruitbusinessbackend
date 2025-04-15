@@ -28,6 +28,7 @@ router.post("/google-login", async (req, res) => {
         if(user.phno === 0){
             checkphno = false;
         }
+        console.log(user.email);
 
         const authToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
@@ -40,6 +41,12 @@ router.post("/google-login", async (req, res) => {
         });
         console.log(checkphno);
         res.cookie("chpn", checkphno, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production', // Secure in production only
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            maxAge: 12 * 60 * 60 * 1000 // 12 hours
+        });
+        res.cookie("emailnamefororder", user.email, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production', // Secure in production only
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
