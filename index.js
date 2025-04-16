@@ -26,7 +26,7 @@ const placeorder = require('./booking.js');
 // CORS Configuration
 app.use(
     cors({
-        origin: "http://localhost:3000",
+        origin: "https://fruitbusinessbackend.vercel.app",
         credentials: true,
         allowedHeaders: ["Content-Type", "Authorization"],
         methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
