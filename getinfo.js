@@ -29,6 +29,8 @@ router.post("/google-login", async (req, res) => {
             checkphno = false;
         }
         console.log(user.email);
+        console.log("TOKEN RECEIVED:", req.body.token);
+        console.log("GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID);
 
         const authToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
