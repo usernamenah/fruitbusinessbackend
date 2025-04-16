@@ -1,8 +1,8 @@
 const express = require('express');
-const bcrypt=require('bcrypt');
+const bcrypt = require('bcrypt');
 const router = express.Router();
 require('dotenv').config();
-const { OAuth2Client } = require('google-auth-library');  
+const { OAuth2Client } = require('google-auth-library');
 const jwt = require("jsonwebtoken");
 
 
@@ -22,10 +22,10 @@ router.post("/google-login", async (req, res) => {
         let checkphno = true;
         let user = await User.findOne({ googleId: sub });
         if (!user) {
-            user = new User({ googleId: sub, name, email, picture ,phno : 0 });
+            user = new User({ googleId: sub, name, email, picture, phno: 0 });
             await user.save();
         }
-        if(user.phno === 0){
+        if (user.phno === 0) {
             checkphno = false;
         }
         console.log(user.email);
@@ -35,25 +35,31 @@ router.post("/google-login", async (req, res) => {
         // Set cookie securely
         res.cookie("authToken", authToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production', // Secure in production only
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            // secure: process.env.NODE_ENV === 'production', // Secure in production only
+            // sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            secure: true,
+            sameSite: 'None',
             maxAge: 12 * 60 * 60 * 1000 // 12 hours
         });
         console.log(checkphno);
         res.cookie("chpn", checkphno, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production', // Secure in production only
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            // secure: process.env.NODE_ENV === 'production', // Secure in production only
+            // sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            secure: true,
+            sameSite: 'None',
             maxAge: 12 * 60 * 60 * 1000 // 12 hours
         });
         res.cookie("emailnamefororder", user.email, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production', // Secure in production only
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            // secure: process.env.NODE_ENV === 'production', // Secure in production only
+            // sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            secure: true,
+            sameSite: 'None',
             maxAge: 12 * 60 * 60 * 1000 // 12 hours
         });
 
-        return res.json({ message: "Login successful", redirect: "/home" }); 
+        return res.json({ message: "Login successful", redirect: "/home" });
     } catch (err) {
         console.error("❌ Google Authentication Error:", err);
         return res.status(500).json({ error: "Google authentication failed" });
