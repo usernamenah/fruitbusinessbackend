@@ -6,6 +6,7 @@ const { OAuth2Client } = require('google-auth-library');
 const jwt = require("jsonwebtoken");
 
 
+
 const User = require('./models/getinfomodel');
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -17,11 +18,23 @@ router.post("/google-login", async (req, res) => {
     try {
 
         const { token } = req.body;
+        
+        if (!token) {
+            return res.status(400).json({ error: "Token not provided" });
+        }
+
+
+        
         const ticket = await client.verifyIdToken({ idToken: token, audience: process.env.GOOGLE_CLIENT_ID });
+
+        
         const { sub, name, email, picture } = ticket.getPayload();
         let checkphno = true;
         console.log("TOKEN RECEIVED:", token);
         console.log("GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID);
+
+
+
 
         let user = await User.findOne({ googleId: sub });
         if (!user) {
@@ -34,6 +47,12 @@ router.post("/google-login", async (req, res) => {
         console.log(user.email);
         console.log("TOKEN RECEIVED:", req.body.token);
         console.log("GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID);
+
+
+
+        console.log("Ticket Payload:", ticket.getPayload());
+
+
 
         const authToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
