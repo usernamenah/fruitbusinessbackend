@@ -26,19 +26,18 @@ const placeorder = require('./booking.js');
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(express.json());
-app.options("*", cors());
 
 // CORS Configuration
 app.use(
     cors({
-        origin: ["http://localhost:3000","https://fruitbusiness.vercel.app"],
-        credentials: true,
-        allowedHeaders: ["Content-Type", "Authorization"],
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        origin: "https://fruitbusiness.vercel.app",
+        credentials: true
+        // allowedHeaders: ["Content-Type", "Authorization"],
+        // methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     })
 );
 
+app.use(express.json());
 
 
 

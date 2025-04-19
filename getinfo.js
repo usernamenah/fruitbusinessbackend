@@ -20,6 +20,9 @@ router.post("/google-login", async (req, res) => {
         const ticket = await client.verifyIdToken({ idToken: token, audience: process.env.GOOGLE_CLIENT_ID });
         const { sub, name, email, picture } = ticket.getPayload();
         let checkphno = true;
+        console.log("TOKEN RECEIVED:", token);
+        console.log("GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID);
+
         let user = await User.findOne({ googleId: sub });
         if (!user) {
             user = new User({ googleId: sub, name, email, picture, phno: 0 });
