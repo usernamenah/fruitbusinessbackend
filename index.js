@@ -22,9 +22,14 @@ const getinfo = require('./getinfo.js');
 const checkinfo = require('./getcontactinfo.js');
 const placeorder = require('./booking.js');
 
+// Middleware
+app.use(morgan("dev"));
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(express.json());
+app.options("*", cors());
 
 // CORS Configuration
-app.use(express.json());
 app.use(
     cors({
         origin: ["http://localhost:3000","https://fruitbusiness.vercel.app"],
@@ -34,12 +39,6 @@ app.use(
     })
 );
 
-// Middleware
-app.use(morgan("dev"));
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
-app.use(express.json());
-app.options("*", cors());
 
 
 
