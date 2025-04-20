@@ -30,7 +30,7 @@ app.use(cookieParser());
 // CORS Configuration
 app.use(
     cors({
-        origin: "https://fruitbusiness.vercel.app",
+        origin: ["https://fruitbusiness.vercel.app","http://localhost:3000"],
         credentials: true
         // allowedHeaders: ["Content-Type", "Authorization"],
         // methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
