@@ -91,7 +91,7 @@ router.post("/google-login", async (req, res) => {
 });
 
 router.get("/user_info" , async(req , res)=>{
-    const { email } = req.cookies.emailnamefororder;
+    const  email  = req.cookies.emailnamefororder;
     if (!email) {
         return res.status(400).json({ error: "email not provided" });
     }
