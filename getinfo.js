@@ -92,6 +92,7 @@ router.post("/google-login", async (req, res) => {
 
 router.get("/user_info" , async(req , res)=>{
     const  email  = req.cookies.emailnamefororder;
+    console.log(email);
     if (!email) {
         return res.status(400).json({ error: "email not provided" });
     }
@@ -100,14 +101,14 @@ router.get("/user_info" , async(req , res)=>{
 
         let user = await User.findOne({ email: email });
         if(!user){
-            return req.status(400).json({ error : "user not found !!..,"});
+            return req.status(404).json({ error : "user not found !!..,"});
         }
     
         return res.json({
             name:user.name,
             email:user.email, 
             picture:user.picture, 
-            phno:user.phno 
+            phno:user.phno
         });
 
     }catch(error){
