@@ -21,6 +21,7 @@ const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 const getinfo = require('./getinfo.js');
 const checkinfo = require('./getcontactinfo.js');
 const placeorder = require('./booking.js');
+const feedback0 = require('./feedbackfromuser.js');
 
 // Middleware
 app.use(morgan("dev"));
@@ -56,6 +57,7 @@ mongoose
 app.use('/api', getinfo);
 app.use('/throughreq', checkinfo);
 app.use('/order', placeorder);
+app.use('/user', feedback0);
 
 // Authentication Middleware
 const authenticate = (req, res, next) => {
