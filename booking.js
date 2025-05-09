@@ -28,4 +28,21 @@ router.post('/place', async (req, res) => {
   }
 });
 
+
+router.get('/get', async (req, res) => {
+  const { email } = req.cookies.emailnamefororder;
+
+  if (!email) {
+    return res.status(400).json({ error: "Email is required" });
+  }
+
+  try {
+    const orders = await OrderModel.find({ email });
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+
 module.exports = router;
