@@ -29,15 +29,20 @@ router.post('/place', async (req, res) => {
 });
 
 
-router.get('/get', async (req, res) => {
-  const { email } = req.cookies.emailnamefororder;
+router.get('/getpreviousorders', async (req, res) => {
+
+  // console.log("email enteres hetre");
+  const  email  = req.cookies.emailnamefororder;
+  console.log(email);
 
   if (!email) {
     return res.status(400).json({ error: "Email is required" });
   }
 
   try {
-    const orders = await OrderModel.find({ email });
+  // console.log("trying to get orders ");
+
+    const orders = await Order.find({ email });
     res.json(orders);
   } catch (err) {
     res.status(500).json({ error: "Server error" });
