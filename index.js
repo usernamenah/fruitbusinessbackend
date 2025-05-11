@@ -22,6 +22,8 @@ const getinfo = require('./getinfo.js');
 const checkinfo = require('./getcontactinfo.js');
 const placeorder = require('./booking.js');
 const feedback0 = require('./feedbackfromuser.js');
+const openaifile = require('./openai.js');
+const geminiai = require('./gemini.js');
 
 // Middleware
 app.use(morgan("dev"));
@@ -58,6 +60,8 @@ app.use('/api', getinfo);
 app.use('/throughreq', checkinfo);
 app.use('/order', placeorder);
 app.use('/user', feedback0);
+app.use('/aipath', openaifile );
+app.use('/aipath', geminiai );
 
 // Authentication Middleware
 const authenticate = (req, res, next) => {
