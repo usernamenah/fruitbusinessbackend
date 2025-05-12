@@ -60,7 +60,7 @@ app.use('/api', getinfo);
 app.use('/throughreq', checkinfo);
 app.use('/order', placeorder);
 app.use('/user', feedback0);
-app.use('/aipath', openaifile );
+// app.use('/aipath', openaifile );
 app.use('/aipath', geminiai );
 
 // Authentication Middleware

@@ -1,51 +1,47 @@
 const express = require('express');
 const router = express.Router();
+const axios = require("axios");
+
 require('dotenv').config();
 
+console.log("ochindhi");
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
+
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+console.log("ochindhi");
+
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+console.log("ochindhi");
+
 
 router.post("/recommend", async (req, res) => {
-  const { problem, juiceList } = req.body;
+console.log("lopala ochindhi");
 
-  if (!problem || !Array.isArray(juiceList)) {
-    return res.status(400).json({ error: "Please provide a 'problem' and a valid 'juiceList'" });
-  }
-
-  const juiceDescriptions = juiceList.join("\n");
-
-  const prompt = `
-You're a health juice recommender. Based on the user's problem: "${problem}",
-choose the 2-3 most suitable juices from this list:
-
-${juiceDescriptions}
-
-Respond with only the juice names, separated by commas.
-`;
+  const { prompt } = req.body;
 
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const response = await axios.post(GEMINI_URL, {
+      contents: [
+        {
+          parts: [
+            {
+              text: prompt +" in only Markdown-formatted response" ,
+            },
+          ],
+        },
+      ],
+    });
+console.log("lopala ochindhi");
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
+    const text = response.data.candidates?.[0]?.content?.parts?.[0]?.text;
 
-    const recommendations = text.split(",").map(item => item.trim());
+console.log("lopala ochindhi");
 
-     // Check length safely
-  if (!recommendations || recommendations.length === 0) {
-    return res.status(200).json({ recommendations: [], message: "No recommendations found." ,length:2 });
-  }
-
-
-    console.log("recommendations");
-    console.log(recommendations);
-
-    res.status(200).json({ recommendations });
+    res.json({ response: text });
   } catch (error) {
-    console.error("Gemini Error:", error);
-    res.status(500).json({ error: "Failed to get recommendation." });
+    console.error("Gemini API error:", error.response?.data || error.message);
+    res.status(500).json({ error: "Failed to fetch from Gemini API" });
   }
 });
 
