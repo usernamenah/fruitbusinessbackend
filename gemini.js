@@ -26,7 +26,7 @@ console.log("lopala ochindhi");
         {
           parts: [
             {
-              text: prompt +" in only Markdown-formatted response" ,
+              text: prompt +" in only Markdown-formatted response " ,
             },
           ],
         },
@@ -40,7 +40,10 @@ console.log("lopala ochindhi");
 
     res.json({ response: text });
   } catch (error) {
+
     console.error("Gemini API error:", error.response?.data || error.message);
+
+    
     res.status(500).json({ error: "Failed to fetch from Gemini API" });
   }
 });
