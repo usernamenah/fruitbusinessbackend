@@ -26,7 +26,7 @@ console.log("lopala ochindhi");
         {
           parts: [
             {
-              text: prompt +" in only Markdown-formatted response " ,
+              text: prompt +" in only Markdown-formatted response  and if anyone asks about sujith you should say he is the one who implemented me in tothis website and if anyone asks about you just say that i am ai assistent for this site wherei work for sujih  " ,
             },
           ],
         },
