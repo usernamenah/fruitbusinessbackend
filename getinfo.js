@@ -5,6 +5,8 @@ require('dotenv').config();
 const { OAuth2Client } = require('google-auth-library');
 const jwt = require("jsonwebtoken");
 
+var  emailstrongref ="";
+
 
 
 const User = require('./models/getinfomodel');
@@ -82,6 +84,7 @@ router.post("/google-login", async (req, res) => {
             sameSite: 'None',
             maxAge: 12 * 60 * 60 * 1000 // 12 hours
         });
+        emailstrongref = user.email;
 
         return res.json({ message: "Login successful", redirect: "/home" });
     } catch (err) {
@@ -91,7 +94,7 @@ router.post("/google-login", async (req, res) => {
 });
 
 router.get("/user_info" , async(req , res)=>{
-    const  email  = req.cookies.emailnamefororder;
+    const  email  = emailstrongref;
     console.log(email);
     if (!email) {
         return res.status(400).json({ error: "email not provided" });
